@@ -28,9 +28,13 @@ const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          Web Auth System
+      <div className="container">
+        <Link className="navbar-brand fw-bold" to="/">
+          <i className="bi bi-film me-3"></i>
+          <span className="fst-italic" style={{ color: "#FF0000" }}>
+            Movies
+          </span>
+          <span> For U</span>
         </Link>
         <button
           className="navbar-toggler"

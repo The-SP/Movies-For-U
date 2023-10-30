@@ -10,6 +10,7 @@ import Logout from "./pages/user/Logout";
 import Signup from "./pages/user/Signup";
 import ResetPassword from "./pages/user/ResetPassword";
 import ResetPasswordConfirm from "./pages/user/ResetPasswordConfirm";
+import Movie from "./pages/movies/MovieDetail";
 
 const App = () => (
   <BrowserRouter>
@@ -30,6 +31,7 @@ const App = () => (
         />
         {/* profile pages */}
         {/* <Route exact path="/profile" element={<Profile />} /> */}
+        <Route path=":movieId" element={<Movie />} />
       </Routes>
     </AuthProvider>
   </BrowserRouter>

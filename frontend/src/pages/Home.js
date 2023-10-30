@@ -1,32 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axiosInstance from "../axios_instance";
+import useHomeFetch from "../Hooks/useHomeFetch";
+import Spinner from "../components/Spinner";
+import MovieList from "./movies/MovieList";
 
 const Home = () => {
-  const [current_user, setCurrentUser] = useState(null);
-  useEffect(() => {
-    axiosInstance
-      .get("auth/users/me/")
-      .then((res) => {
-        // console.log("Current logged in user:", res.data);
-        setCurrentUser(res.data);
-      })
-      .catch((err) => console.log("Fetch logged in user error:", err));
-  }, []);
+  const {
+    movies,
+    isLoading,
+    error,
+    searchTerm,
+    setSearchTerm,
+    setIsLoadingMore,
+  } = useHomeFetch();
+
+  //   console.log("[state] from home:", movies);
+
+  if (error) return <div>Something went wrong...</div>;
 
   return (
-    <div className="container">
-      <div className="jumbotron mt-5">
-        {current_user && (
-          <h1 className="display-4">Welcome, {current_user.name}</h1>
-        )}
-
-        {!current_user && (
-          <Link className="btn btn-primary btn-lg" to="/login" role="button">
-            Login
-          </Link>
-        )}
-      </div>
+    <div id="background-overlay">
+      <MovieList movies={movies.results} />
+      {isLoading && <Spinner />}
+      {movies.page < movies.total_pages && !isLoading && (
+        <div className="d-flex justify-content-center mb-4">
+          <button
+            className="btn btn-lg btn-outline-success"
+            onClick={() => setIsLoadingMore(true)}
+          >
+            Load More
+          </button>
+        </div>
+      )}
     </div>
   );
 };
