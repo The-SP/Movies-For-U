@@ -21,8 +21,7 @@ const Home = () => {
     <div id="background-overlay">
       <div className="container mt-4">
         <SearchBar setSearchTerm={setSearchTerm} />
-        <h2>{searchTerm ? "Search Result" : "Popular Movies"}</h2>
-        <MovieList movies={movies.results} />
+        <MovieList movies={movies.results}         heading={searchTerm ? "Search Result" : "Popular Movies"} />
         {isLoading && <Spinner />}
         {movies.page < movies.total_pages && !isLoading && (
           <div className="d-flex justify-content-center mb-4">

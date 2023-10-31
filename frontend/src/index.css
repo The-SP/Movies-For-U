@@ -31,7 +31,6 @@ body {
 .card-title,
 .card-text {
   font-size: 1.1rem;
-  text-align: center;
   margin: 0;
   cursor: pointer;
 }

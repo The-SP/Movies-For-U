@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'corsheaders',
-    'user_system'
+    'user_system',
+    'movies',
 ]
 
 MIDDLEWARE = [

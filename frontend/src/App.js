@@ -11,7 +11,7 @@ import Signup from "./pages/user/Signup";
 import ResetPassword from "./pages/user/ResetPassword";
 import ResetPasswordConfirm from "./pages/user/ResetPasswordConfirm";
 import Movie from "./pages/movies/MovieDetail";
-import Bookmark from "./pages/profile/Bookmark";
+import Profile from "./pages/profile/Profile";
 
 const App = () => (
   <BrowserRouter>
@@ -33,7 +33,7 @@ const App = () => (
 
         <Route path=":movieId" element={<Movie />} />
         {/* profile pages */}
-        <Route exact path="/bookmark" element={<Bookmark />} />
+        <Route exact path="/profile" element={<Profile />} />
       </Routes>
     </AuthProvider>
   </BrowserRouter>

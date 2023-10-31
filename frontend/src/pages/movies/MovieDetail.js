@@ -3,6 +3,7 @@ import Spinner from "../../components/Spinner";
 import useMovieFetch from "../../Hooks/useMovieFetch";
 import { calcTime, convertMoney } from "../../utils/helpers";
 import { IMAGE_BASE_URL } from "../../utils/config";
+import BookmarkButton from "./BookmarkButton";
 
 const Movie = () => {
   let { movieId } = useParams();
@@ -12,6 +13,7 @@ const Movie = () => {
 
   if (isLoading) return <Spinner />;
   if (error) return <h1>Something went wrong...</h1>;
+
   return (
     <div
       className="movie-detail-bg"
@@ -63,6 +65,8 @@ const Movie = () => {
                 <span> {convertMoney(movie.revenue)}</span>
               </div>
             </div>
+
+            <BookmarkButton movie_id={movie.id} />
           </div>
         </div>
       </div>
