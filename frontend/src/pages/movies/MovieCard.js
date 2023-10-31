@@ -3,6 +3,8 @@ import { IMAGE_BASE_URL } from '../../utils/config';
 
 const MovieCard = ({ movie }) => {
   const releaseYear = new Date(movie.release_date).getFullYear();
+  
+  if (!movie.poster_path) return;
 
   return (
     <div className="col-lg-3 col-md-6 col-sm-6 mb-4">

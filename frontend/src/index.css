@@ -56,13 +56,51 @@ body {
   margin: 0 auto;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add a text shadow */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .movie-detail-img {
-    border-radius: 10px;
-    cursor: pointer;
-    object-fit: cover;
-    width: 100%;
-    max-width: 720px;
-  }
+  border-radius: 10px;
+  cursor: pointer;
+  object-fit: cover;
+  width: 100%;
+  max-width: 720px;
+}
+
+/* Search bar */
+.custom-search-input {
+  position: relative;
+  max-width: 800px;
+  width: 100%;
+  height: 55px;
+  background: #343a40;
+  margin: 1rem auto;
+  border-radius: 40px;
+  color: #ffffff;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.search-input {
+  position: absolute;
+  left: 60px;
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+  width: calc(100% - 60px);
+  background: transparent;
+  height: 40px;
+  color: #ffffff;
+}
+
+.search-input:focus {
+  outline: none; /* Removes the outline on focus */
+  box-shadow: none; /* Removes the box shadow on focus */
+}

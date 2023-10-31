@@ -23,6 +23,9 @@ const Navbar = () => {
       <Link className="nav-link" to="/login">
         Login
       </Link>
+      <Link className="nav-link" to="/bookmark">
+        Bookmark
+      </Link>
     </>
   );
 

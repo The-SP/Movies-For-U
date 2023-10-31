@@ -1,6 +1,7 @@
 import useHomeFetch from "../Hooks/useHomeFetch";
 import Spinner from "../components/Spinner";
 import MovieList from "./movies/MovieList";
+import SearchBar from "./movies/SearchBar";
 
 const Home = () => {
   const {
@@ -18,18 +19,22 @@ const Home = () => {
 
   return (
     <div id="background-overlay">
-      <MovieList movies={movies.results} />
-      {isLoading && <Spinner />}
-      {movies.page < movies.total_pages && !isLoading && (
-        <div className="d-flex justify-content-center mb-4">
-          <button
-            className="btn btn-lg btn-outline-success"
-            onClick={() => setIsLoadingMore(true)}
-          >
-            Load More
-          </button>
-        </div>
-      )}
+      <div className="container mt-4">
+        <SearchBar setSearchTerm={setSearchTerm} />
+        <h2>{searchTerm ? "Search Result" : "Popular Movies"}</h2>
+        <MovieList movies={movies.results} />
+        {isLoading && <Spinner />}
+        {movies.page < movies.total_pages && !isLoading && (
+          <div className="d-flex justify-content-center mb-4">
+            <button
+              className="btn btn-lg btn-outline-success"
+              onClick={() => setIsLoadingMore(true)}
+            >
+              Load More
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
