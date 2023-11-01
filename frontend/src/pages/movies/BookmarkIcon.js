@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axios_instance";
+import AuthContext from "../../context/AuthContext";
 
 const BookmarkIcon = ({ movie_id, heading }) => {
+  const { isLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [isBookmarked, setIsBookmarked] = useState(heading === "Bookmarks");
 
   const addBookmark = (movie_id) => {
+    if (!isLoggedIn) {
+        navigate('/login')
+        return;
+    }
+
     axiosInstance
       .patch(`api/add_bookmark/`, { movie_id: movie_id })
       .then((response) => {
@@ -17,6 +27,11 @@ const BookmarkIcon = ({ movie_id, heading }) => {
   };
 
   const removeBookmark = (movie_id) => {
+    if (!isLoggedIn) {
+        navigate('/login')
+        return;
+    }
+    
     axiosInstance
       .patch(`api/remove_bookmark/`, { movie_id: movie_id })
       .then((response) => {
