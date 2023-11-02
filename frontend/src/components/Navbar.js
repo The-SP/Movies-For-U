@@ -10,6 +10,9 @@ const Navbar = () => {
       <Link className="nav-link" to="/profile">
         Bookmark
       </Link>
+      <Link className="nav-link" to="/recommendation">
+        Recommendation
+      </Link>
       <Link className="nav-link" to="/logout">
         Logout
       </Link>

@@ -1,6 +1,12 @@
-from rest_framework import generics
+import pandas as pd
+import requests, environ
+
+from rest_framework import generics, views
+from rest_framework.response import Response
+
 from user_system.models import UserProfile
 from user_system.serializers import UserProfileSerializer
+from .recommender import get_recommendations
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -57,3 +63,79 @@ class RemoveBookmarkView(generics.UpdateAPIView):
         )
 
         serializer.save(bookmarked_movies=bookmarked_movies)
+
+
+"""
+View for recommendation system
+"""
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+TMDB_API_KEY = env("TMDB_API_KEY")
+
+
+class GetRecommendationsAPIView(views.APIView):
+    # Assuming tmdb_5000.csv is loaded into a DataFrame named 'tmdb_df'
+    tmdb_df = pd.read_csv("./movies/data/tmdb_5000.csv")
+
+    def get_movie_info(self, movie_id):
+        # Check if the movie_id is present in tmdb_5000.csv dataset
+        if int(movie_id) in self.tmdb_df["id"].tolist():
+            print(f"Fetching movie {movie_id} from tmdb_5000.csv")
+
+            # If found, get the desired columns from the dataset
+            movie_info = self.tmdb_df.loc[
+                self.tmdb_df["id"] == int(movie_id),
+                ["id", "title", "cast", "crew", "keywords", "genres"],
+            ]
+            return movie_info.to_dict(orient="records")[0]
+        else:
+            print(f"Fetching movie {movie_id} from tmdb api")
+
+            # If not found, fetch the data from tmdb API (replace with your actual API call logic)
+            api_url = (
+                f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDB_API_KEY}"
+            )
+            api_response = requests.get(api_url)
+
+            if api_response.status_code == 200:
+                movie_info = api_response.json()
+
+                # Extract relevant information from the API response
+                movie_info = {
+                    "id": movie_info["id"],
+                    "title": movie_info["title"],
+                    "cast": "",  # You may need to fetch cast data from a different endpoint
+                    "crew": "",  # You may need to fetch crew data from a different endpoint
+                    "keywords": "",  # You may need to fetch keywords data from a different endpoint
+                    "genres": str(movie_info["genres"]),
+                }
+                return movie_info
+            else:
+                return None
+
+    def get(self, request, *args, **kwargs):
+        user_profile = UserProfile.objects.get(user=self.request.user)
+
+        # Assuming request.user.UserProfile.bookmarks is a string like '123,456,789'
+        bookmark_ids = user_profile.bookmarked_movies.split(",")
+
+        # Get movie information for each bookmarked movie
+        bookmarked_movies = []
+        for bookmark_id in bookmark_ids:
+            if not bookmark_id:
+                continue
+            movie_info = self.get_movie_info(bookmark_id)
+            if movie_info:
+                bookmarked_movies.append(movie_info)
+
+        # Create a DataFrame from the bookmarked movies data
+        bookmarked_df = pd.DataFrame(bookmarked_movies)
+
+        # Get recommendations using get_recommendations function
+        recommendations = get_recommendations(bookmarked_df)
+
+        # Get the indices of the recommendations
+        recommended_indices = recommendations.id.tolist()
+
+        return Response({"recommended_indices": recommended_indices})

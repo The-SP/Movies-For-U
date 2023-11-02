@@ -4,7 +4,7 @@ import API from "../../utils/API";
 import MovieList from "../movies/MovieList";
 import axiosInstance from "../../axios_instance";
 
-const Profile = () => {
+const Recommender = () => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -12,22 +12,27 @@ const Profile = () => {
   useEffect(() => {
     setError(false);
     setIsLoading(true);
-    // Fetch the bookmarked movies from your Django API
+
+    console.log("Fetching the recommended movies from backend..");
+
+    // Fetch the recommended movies from your Django API
     axiosInstance
-      .get("api/profile/")
+      .get("api/recommendation/")
       .then((response) => {
-        const bookmarkedIDs = response.data.bookmarked_movies
-          .split(",")
-          .filter(Boolean);
-        // console.log("Fetched bookmarked ids:", bookmarkedIDs);
+        const recommendedIDs = response.data.recommended_indices;
+        // console.log("Fetched Recommended ids:", recommendedIDs);
 
         return Promise.all(
-          bookmarkedIDs.map((movie_id) => API.fetchMovie(movie_id))
+          recommendedIDs.map((movie_id) => API.fetchMovie(movie_id))
         );
       })
       .then((moviesData) => {
-        // console.log("Fetched bookmarked movies:", moviesData);
-        setMovies(moviesData);
+        // console.log("Fetched recommended movies:", moviesData);
+        const filteredMovies = moviesData.filter((movie) =>
+          movie.hasOwnProperty("id")
+        );
+
+        setMovies(filteredMovies);
       })
       .catch((err) => {
         console.log("Error:", err.message);
@@ -43,9 +48,9 @@ const Profile = () => {
 
   return (
     <div className="container mt-4">
-      <MovieList movies={movies} heading={'Bookmarks'} />
+      <MovieList movies={movies} heading={"Recommendations For U"} />
     </div>
   );
 };
 
-export default Profile;
+export default Recommender;

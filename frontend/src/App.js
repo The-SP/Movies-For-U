@@ -13,6 +13,7 @@ import ResetPassword from "./pages/user/ResetPassword";
 import ResetPasswordConfirm from "./pages/user/ResetPasswordConfirm";
 import Movie from "./pages/movies/MovieDetail";
 import Profile from "./pages/profile/Profile";
+import Recommender from "./pages/profile/Recommender";
 
 const App = () => {
   return (
@@ -41,6 +42,15 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/recommendation"
+            element={
+              <ProtectedRoute>
+                <Recommender />
               </ProtectedRoute>
             }
           />
