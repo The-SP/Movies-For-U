@@ -1,46 +1,62 @@
-# Authentication System
-This authentication system is built using Django REST for the backend and React for the frontend. It uses Djoser for authentication functionalities.
+# Movies For U
 
-## Backend
+Movies For U is a full-stack application for discovering movies and getting recommendations. It utilizes Django Rest Framework for the backend and React for the frontend. The recommendation system uses sklearn, offering personalized movie suggestions based on metadata analysis.
 
-- The backend utilizes Django REST framework for building a powerful API.
-- Authentication functionalities are handled by Djoser, offering features like signup, login, password reset, etc.
-- **Backend Setup**  
-    ```bash
-    cd backend
-    py -m venv env
-    env\Scripts\activate
-    pip install -r requirements.txt
-    ```
-- To set up email functionality for account creation, you'll need to set up environment variables. Create a `.env` file inside `backend/core/` with the following content:
+## Features:
 
-  ```plaintext
-  EMAIL_HOST_USER=youremail@gmail.com
-  EMAIL_HOST_PASSWORD=yourpassword
-  DOMAIN=localhost:3000
-  SITE_NAME=yourwebsitename
-  ```
+- **Authentication System**: Securely register and log in to manage your movie preferences.
+- **Search Movies**: View current popular movies. Easily search for movies based on titles or keywords.
+- **Bookmark**: Add movies to your watchlist or bookmark them for future viewing.
+- **Movie Recommendations**: Like movies to receive recommendations tailored to your preferences.
 
-- For more information on using Djoser, refer to the [official documentation](https://djoser.readthedocs.io/en/latest/).
+## Project Setup
 
-## Frontend
-- **Frontend Setup**  
-    ```bash
-    cd frontend
-    npm install
-    ```
-- The `axios_instance.js` file handles HTTP requests to the backend API.
-- It manages access tokens, refresh tokens, and handles token expiration scenarios.
-- The `isLoggedIn` context is utilized across various components to manage user authentication and access control.
+### Backend Setup
 
-## Usage
+1. Install packages
+
 ```bash
-# Backend
-cd backend
-py manage.py runserver
+# Create a virtual environment to isolate our package dependencies locally
+python -m venv env
+env\Scripts\activate
+
+# Install required packages
+pip install -r requirements.txt
 ```
+
+2. To set up email functionality for account creation, create a `.env` file inside `backend/core/` with the following content:
+
 ```bash
-# Frontend
-cd frontend
+EMAIL_HOST_USER=youremail@gmail.com
+EMAIL_HOST_PASSWORD=yourpassword
+DOMAIN=localhost:3000
+SITE_NAME=yourwebsitename
+```
+
+3. To set up backend for recommendation system
+    - Create a `.env` file inside `backend/movies` with following content:  
+        `TMDB_API_KEY=YOUR_TMDB_API_KEY`
+    - Run `notebooks\movie.ipynb` to create `tmdb_5000.csv`, `count_matrix.pkl` and `vectorizer.pkl`. Then, store these files inside `backend\movies\data`.
+
+### Frontend Setup
+
+1. Install packages
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. To set up tmdb api key, create a `.env` file inside `frontend` 
+     `REACT_APP_TMDB_API_KEY=YOUR_TMDB_API_KEY`
+
+## Running the server and frontend
+
+```bash
+py manage.py runserver
 npm start
 ```
+
+## Recommendation System
+
+This project incorporates a movie recommendation system using the TMDb Movie Dataset. The recommendation engine is based on metadata, including credits, genres, and keywords. It utilizes sklearn for generating movie recommendations.
+
+- For further experimentation with the recommender, refer to the notebooks in the notebooks folder.
