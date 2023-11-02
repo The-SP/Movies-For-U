@@ -4,7 +4,7 @@ import API from "../../utils/API";
 import MovieList from "../movies/MovieList";
 import axiosInstance from "../../axios_instance";
 
-const Recommender = () => {
+const BookmarkedMovies = () => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -12,33 +12,28 @@ const Recommender = () => {
   useEffect(() => {
     setError(false);
     setIsLoading(true);
-
-    console.log("Fetching the recommended movies from backend..");
-
-    // Fetch the recommended movies from your Django API
+    // Fetch the bookmarked movies from your Django API
     axiosInstance
-      .get("api/recommendation/")
+      .get("api/profile/")
       .then((response) => {
-        const recommendedIDs = response.data.recommended_indices;
-        // console.log("Fetched Recommended ids:", recommendedIDs);
+        const bookmarkedIDs = response.data.bookmarked_movies
+          .split(",")
+          .filter(Boolean);
+        // console.log("Fetched bookmarked ids:", bookmarkedIDs);
 
-        // Check if recommendedIDs is empty or null
-        if (!recommendedIDs || recommendedIDs.length === 0) {
-        //   console.log("No recommended movies found.");
+        // Check if bookmarkedIDs is empty or null
+        if (!bookmarkedIDs || bookmarkedIDs.length === 0) {
+          // console.log("No bookmarked movies found.");
           return [];
         }
 
         return Promise.all(
-          recommendedIDs.map((movie_id) => API.fetchMovie(movie_id))
+          bookmarkedIDs.map((movie_id) => API.fetchMovie(movie_id))
         );
       })
       .then((moviesData) => {
-        // console.log("Fetched recommended movies:", moviesData);
-        const filteredMovies = moviesData.filter((movie) =>
-          movie.hasOwnProperty("id")
-        );
-
-        setMovies(filteredMovies);
+        // console.log("Fetched bookmarked movies:", moviesData);
+        setMovies(moviesData);
       })
       .catch((err) => {
         console.log("Error:", err.message);
@@ -56,13 +51,13 @@ const Recommender = () => {
     <div className="container mt-4">
       {movies.length === 0 ? (
         <div className="alert alert-info" role="alert">
-          You haven't liked any movies. To get recommendations, please like some movies first.
+          There are no movies in your bookmarks.
         </div>
       ) : (
-        <MovieList movies={movies} heading={"Recommendations For U"} />
+        <MovieList movies={movies} heading={"Bookmarks"} />
       )}
     </div>
   );
 };
 
-export default Recommender;
+export default BookmarkedMovies;

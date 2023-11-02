@@ -44,7 +44,7 @@ const BookmarkButton = ({ movie_id }) => {
   };
 
   return (
-    <>
+    <div className="mt-3">
       {isBookmarked ? (
         <button
           className="btn btn-dark btn-lg"
@@ -61,7 +61,7 @@ const BookmarkButton = ({ movie_id }) => {
           <i className="bi bi-bookmark text-success fs-5 me-2"></i> Bookmark
         </button>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -12,7 +11,8 @@ import Signup from "./pages/user/Signup";
 import ResetPassword from "./pages/user/ResetPassword";
 import ResetPasswordConfirm from "./pages/user/ResetPasswordConfirm";
 import Movie from "./pages/movies/MovieDetail";
-import Profile from "./pages/profile/Profile";
+import BookmarkedMovies from "./pages/profile/BookmarkedMovies";
+import LikedMovies from "./pages/profile/LikedMovies";
 import Recommender from "./pages/profile/Recommender";
 
 const App = () => {
@@ -38,10 +38,19 @@ const App = () => {
           {/* profile pages */}
           <Route
             exact
-            path="/profile"
+            path="/bookmarks"
             element={
               <ProtectedRoute>
-                <Profile />
+                <BookmarkedMovies />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            exact
+            path="/likes"
+            element={
+              <ProtectedRoute>
+                <LikedMovies />
               </ProtectedRoute>
             }
           />

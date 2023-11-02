@@ -7,8 +7,11 @@ const Navbar = () => {
 
   const authLinks = () => (
     <>
-      <Link className="nav-link" to="/profile">
-        Bookmark
+      <Link className="nav-link" to="/bookmarks">
+        Bookmarks
+      </Link>
+      <Link className="nav-link" to="/likes">
+        Likes
       </Link>
       <Link className="nav-link" to="/recommendation">
         Recommendation

@@ -56,6 +56,7 @@ const BookmarkIcon = ({ movie_id, heading }) => {
           className="bi bi-bookmark text-success fs-5 me-2"
           onClick={() => addBookmark(movie_id)}
           style={{ cursor: "pointer" }}
+          data-toggle="tooltip" data-placement="bottom" title="Bookmark"
         ></i>
       )}
     </>

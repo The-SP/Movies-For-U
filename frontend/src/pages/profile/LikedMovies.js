@@ -4,7 +4,7 @@ import API from "../../utils/API";
 import MovieList from "../movies/MovieList";
 import axiosInstance from "../../axios_instance";
 
-const Profile = () => {
+const LikedMovies = () => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -12,21 +12,21 @@ const Profile = () => {
   useEffect(() => {
     setError(false);
     setIsLoading(true);
-    // Fetch the bookmarked movies from your Django API
+    // Fetch the liked movies from your Django API
     axiosInstance
       .get("api/profile/")
       .then((response) => {
-        const bookmarkedIDs = response.data.bookmarked_movies
-          .split(",")
-          .filter(Boolean);
-        // console.log("Fetched bookmarked ids:", bookmarkedIDs);
+        const likedIDs = response.data.liked_movies.split(",").filter(Boolean);
+
+        if (!likedIDs || likedIDs.length === 0) {
+          return [];
+        }
 
         return Promise.all(
-          bookmarkedIDs.map((movie_id) => API.fetchMovie(movie_id))
+          likedIDs.map((movie_id) => API.fetchMovie(movie_id))
         );
       })
       .then((moviesData) => {
-        // console.log("Fetched bookmarked movies:", moviesData);
         setMovies(moviesData);
       })
       .catch((err) => {
@@ -43,9 +43,15 @@ const Profile = () => {
 
   return (
     <div className="container mt-4">
-      <MovieList movies={movies} heading={'Bookmarks'} />
+      {movies.length === 0 ? (
+        <div className="alert alert-info" role="alert">
+          There are no liked movies.
+        </div>
+      ) : (
+        <MovieList movies={movies} heading={"Liked Movies"} />
+      )}
     </div>
   );
 };
 
-export default Profile;
+export default LikedMovies;

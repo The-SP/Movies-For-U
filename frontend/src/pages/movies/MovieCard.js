@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../utils/config";
 import BookmarkIcon from "./BookmarkIcon";
+import LikeIcon from "./LikeIcon";
 
 const MovieCard = ({ movie, heading }) => {
   const releaseYear = new Date(movie.release_date).getFullYear();
@@ -25,6 +26,7 @@ const MovieCard = ({ movie, heading }) => {
             </div>
 
             <div className="col-auto align-self-start">
+              <LikeIcon movie_id={movie.id} heading={heading} />
               <BookmarkIcon movie_id={movie.id} heading={heading} />
             </div>
           </div>
