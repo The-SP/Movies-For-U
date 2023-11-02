@@ -81,7 +81,7 @@ def preprocess_df(df):
 df = pd.read_csv("./movies/data/tmdb_5000.csv")
 
 
-def get_recommendations(input_df):
+def calculate_similarity_scores(input_df):
     preprocess_df(input_df)
 
     # Load the vectorizer
@@ -104,7 +104,7 @@ def get_recommendations(input_df):
     top_indices = total_sim_scores.argsort()[::-1]
 
     # top_indices may include movies in input_df
-    top_n = 10 + input_df.shape[0]
+    top_n = 25 + input_df.shape[0]
 
     # Get the top recommended movies and their corresponding scores
     top_recommendations = df.iloc[top_indices[:top_n]].copy()
@@ -116,5 +116,52 @@ def get_recommendations(input_df):
     top_recommendations = top_recommendations[
         ~top_recommendations["id"].isin(input_df["id"])
     ]
+
+    return top_recommendations
+
+
+# Define the function to calculate weighted rating
+def calculate_weighted_rating(vote_count, vote_average, C, m):
+    return (vote_count / (vote_count + m)) * vote_average + (m / (m + vote_count)) * C
+
+
+def calculate_and_filter_recommendations(top_recommendations):
+    # Calculate C (mean vote) and m (minimum vote count threshold)
+    C = top_recommendations["vote_average"].mean()
+    m = top_recommendations["vote_count"].quantile(0.50)
+
+    # Calculate weighted ratings
+    top_recommendations["Weighted Rating"] = calculate_weighted_rating(
+        top_recommendations["vote_count"], top_recommendations["vote_average"], C, m
+    )
+
+    # Define MIN_WEIGHTED_RATING as a percentile threshold (adjust as needed)
+    MIN_WEIGHTED_RATING = top_recommendations["Weighted Rating"].quantile(
+        0.6
+    )  # This sets it to the 60th percentile
+
+    # Filter based on weighted rating
+    top_recommendations = top_recommendations[
+        top_recommendations["Weighted Rating"] >= MIN_WEIGHTED_RATING
+    ]
+
+    return top_recommendations[
+        [
+            "id",
+            "title",
+            "vote_count",
+            "vote_average",
+            "Weighted Rating",
+            "Similarity Score",
+        ]
+    ]
+
+
+def get_recommendations(input_df):
+    # Find top 25 movies based on similarity scores
+    top_recommendations = calculate_similarity_scores(input_df)
+
+    # Remove movies with low weighted_rating
+    top_recommendations = calculate_and_filter_recommendations(top_recommendations)
 
     return top_recommendations
