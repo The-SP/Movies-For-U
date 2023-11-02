@@ -45,6 +45,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
     bookmarked_movies = models.CharField(max_length=1000, default='', blank=True)
+    liked_movies = models.CharField(max_length=1000, default='', blank=True)
 
     def __str__(self):
         return self.user.name

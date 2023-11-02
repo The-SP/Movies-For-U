@@ -17,4 +17,4 @@ class UserCreateSerializer(UserCreateSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ["user", "bookmarked_movies"]
+        fields = ["user", "bookmarked_movies", "liked_movies"]

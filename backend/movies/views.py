@@ -65,6 +65,53 @@ class RemoveBookmarkView(generics.UpdateAPIView):
         serializer.save(bookmarked_movies=bookmarked_movies)
 
 
+class AddLikeView(generics.UpdateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+    def get_object(self):
+        return UserProfile.objects.get(user=self.request.user)
+
+    def perform_update(self, serializer):
+        # Get the movie ID to add from request data
+        movie_id = self.request.data.get("movie_id")
+
+        # Get the user profile from get_object
+        user_profile = self.get_object()
+
+        # Check if the movie_id is already in liked_movies
+        if str(movie_id) in user_profile.liked_movies.split(","):
+            return
+
+        # Add the movie ID to the liked_movies field
+        liked_movies = user_profile.liked_movies or ""
+        liked_movies += f",{movie_id}"
+
+        serializer.save(liked_movies=liked_movies)
+
+
+class RemoveLikeView(generics.UpdateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+    def get_object(self):
+        return UserProfile.objects.get(user=self.request.user)
+
+    def perform_update(self, serializer):
+        # Get the movie ID to remove from request data
+        movie_id = self.request.data.get("movie_id")
+
+        # Get the user profile from get_object
+        user_profile = self.get_object()
+
+        # Remove the movie ID from the liked_movies field
+        liked_movies = user_profile.liked_movies or ""
+        liked_movies = ",".join(
+            x for x in liked_movies.split(",") if x != str(movie_id)
+        )
+        serializer.save(liked_movies=liked_movies)
+
+
 """
 View for recommendation system
 """
@@ -117,23 +164,27 @@ class GetRecommendationsAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         user_profile = UserProfile.objects.get(user=self.request.user)
 
-        # Assuming request.user.UserProfile.bookmarks is a string like '123,456,789'
-        bookmark_ids = user_profile.bookmarked_movies.split(",")
+        # Check if liked_movies is an empty string
+        if user_profile.liked_movies == "":
+            return Response({"recommended_indices": []})
 
-        # Get movie information for each bookmarked movie
-        bookmarked_movies = []
-        for bookmark_id in bookmark_ids:
-            if not bookmark_id:
+        # Assuming request.user.UserProfile.liked_movies is a string like '123,456,789'
+        liked_ids = user_profile.liked_movies.split(",")
+
+        # Get movie information for each liked movie
+        liked_movies = []
+        for liked_id in liked_ids:
+            if not liked_id:
                 continue
-            movie_info = self.get_movie_info(bookmark_id)
+            movie_info = self.get_movie_info(liked_id)
             if movie_info:
-                bookmarked_movies.append(movie_info)
+                liked_movies.append(movie_info)
 
-        # Create a DataFrame from the bookmarked movies data
-        bookmarked_df = pd.DataFrame(bookmarked_movies)
+        # Create a DataFrame from the liked movies data
+        liked_df = pd.DataFrame(liked_movies)
 
         # Get recommendations using get_recommendations function
-        recommendations = get_recommendations(bookmarked_df)
+        recommendations = get_recommendations(liked_df)
 
         # Get the indices of the recommendations
         recommended_indices = recommendations.id.tolist()
